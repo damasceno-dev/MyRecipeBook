@@ -15,6 +15,44 @@ This guide provides step-by-step instructions for deploying the complete full-st
 - Git
 - GitHub account with access to this repository
 
+## Development Workflow
+
+### Handling Changes in Submodules
+
+This project uses Git submodules to manage the three main components. When making changes, follow these guidelines:
+
+#### Single Submodule Changes
+If you have changes in only one submodule (e.g., only frontend changes):
+1. Navigate to the submodule directory:
+   ```bash
+   cd web  # or server or infra
+   ```
+2. Commit and push your changes:
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   git push
+   ```
+3. Return to the main repository and update the submodule reference:
+   ```bash
+   cd ..
+   git add web  # or server or infra
+   git commit -m "Update web submodule reference"
+   git push
+   ```
+
+#### Multiple Submodule Changes
+If you have changes in multiple submodules (e.g., frontend and infrastructure):
+1. Commit and push changes in each submodule separately
+2. Return to the main repository and update all submodule references in a single commit:
+   ```bash
+   git add web infra  # or any combination of submodules
+   git commit -m "Update submodule references"
+   git push
+   ```
+
+> **Note**: Always commit changes in the submodules first, then update the references in the main repository. This ensures that the submodule references point to valid commits.
+
 ## Deployment Steps
 
 ### 1. Infrastructure Setup (infra submodule)
@@ -98,8 +136,8 @@ After successful deployment, note down the following workflow outputs:
 ### 3. Deploy AppRunner (Step 3)
 
 After running the deployment workflow and deploying the backed, go back to the infra repository and run the app runner workflow manually in GitHub:
-1. Go to your GitHub repo → Click on “Actions”. On the left sidebar, locate “app-runner.yml”.
-2. Click “Run workflow” (usually a dropdown button) and confirm.
+1. Go to your GitHub repo → Click on "Actions". On the left sidebar, locate "app-runner.yml".
+2. Click "Run workflow" (usually a dropdown button) and confirm.
 3. After successful deployment, note down the AppRunner service URL from the outputs.
 
 ### 4. Web Configuration and Deployment
