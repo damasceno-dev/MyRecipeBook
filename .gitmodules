@@ -1,8 +1,8 @@
 [submodule "infra"]
-	path = terraform
+	path = infra
 	url = https://github.com/damasceno-dev/myRecipeBook-Infrastructure.git
 [submodule "server"]
-	path = MyRecipeBook
+	path = server
 	url = https://github.com/damasceno-dev/myRecipeBook-Backend.git
 [submodule "web"]
 	path = web
