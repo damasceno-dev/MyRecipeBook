@@ -15,44 +15,6 @@ This guide provides step-by-step instructions for deploying the complete full-st
 - Git
 - GitHub account with access to this repository
 
-## Development Workflow
-
-### Handling Changes in Submodules
-
-This project uses Git submodules to manage the three main components. When making changes, follow these guidelines:
-
-#### Single Submodule Changes
-If you have changes in only one submodule (e.g., only frontend changes):
-1. Navigate to the submodule directory:
-   ```bash
-   cd web  # or server or infra
-   ```
-2. Commit and push your changes:
-   ```bash
-   git add .
-   git commit -m "Your commit message"
-   git push
-   ```
-3. Return to the main repository and update the submodule reference:
-   ```bash
-   cd ..
-   git add web  # or server or infra
-   git commit -m "Update web submodule reference"
-   git push
-   ```
-
-#### Multiple Submodule Changes
-If you have changes in multiple submodules (e.g., frontend and infrastructure):
-1. Commit and push changes in each submodule separately
-2. Return to the main repository and update all submodule references in a single commit:
-   ```bash
-   git add web infra  # or any combination of submodules
-   git commit -m "Update submodule references"
-   git push
-   ```
-
-> **Note**: Always commit changes in the submodules first, then update the references in the main repository. This ensures that the submodule references point to valid commits.
-
 ## Deployment Steps
 
 ### 1. Infrastructure Setup (infra submodule)
@@ -206,3 +168,42 @@ The application has continuous integration and deployment set up:
 1. In the infra submodule, execute workflows/destroy.yml manually to destroy all infra and server resources.
 2. In AWS Amplify, App settings, click on Delete app
 3. Manually delete the s3 bucket and the initial policy created in step 1.1.2
+
+
+## Development Workflow
+
+### Handling Changes in Submodules
+
+This project uses Git submodules to manage the three main components. When making changes, follow these guidelines:
+
+#### Single Submodule Changes
+If you have changes in only one submodule (e.g., only frontend changes):
+1. Navigate to the submodule directory:
+   ```bash
+   cd web  # or server or infra
+   ```
+2. Commit and push your changes:
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   git push
+   ```
+3. Return to the main repository and update the submodule reference:
+   ```bash
+   cd ..
+   git add web  # or server or infra
+   git commit -m "Update web submodule reference"
+   git push
+   ```
+
+#### Multiple Submodule Changes
+If you have changes in multiple submodules (e.g., frontend and infrastructure):
+1. Commit and push changes in each submodule separately
+2. Return to the main repository and update all submodule references in a single commit:
+   ```bash
+   git add web infra  # or any combination of submodules
+   git commit -m "Update submodule references"
+   git push
+   ```
+
+> **Note**: Always commit changes in the submodules first, then update the references in the main repository. This ensures that the submodule references point to valid commits.
