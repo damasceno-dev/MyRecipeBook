@@ -1,6 +1,6 @@
 # MyRecipeBook Full-Stack Application Deployment Guide
 
-This guide provides step-by-step instructions for deploying the complete full-stack application, including infrastructure, server, and web components.
+This guide provides step-by-step instructions for deploying the complete full-stack application, including infrastructure, server, and web.
 
 ## Project Structure
 
@@ -148,6 +148,42 @@ npm run generate-api:prod
 ```
 
 2. Trigger a new server deployment to apply the changes.
+
+### 6. Finalize Web Configuration
+
+1. Update the `.env.production` file with all required values:
+   ```env
+   # Backend API URL (from AppRunner deployment)
+   NEXT_PUBLIC_API_URL=https://your-apprunner-service-url
+
+   # Google OAuth Configuration
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+   # NextAuth Configuration
+   NEXTAUTH_URL=https://your-amplify-web-url <---- #### ADD THIS LINE ####
+   NEXTAUTH_SECRET=your_nextauth_secret
+   ```
+
+2. Generate the API types and functions for production:
+   ```bash
+   npm run generate:prod
+   ```
+
+3. Commit and push these changes to trigger a new deployment:
+   ```bash
+   git add .env.production src/api
+   git commit -m "Update production configuration with final URLs"
+   git push
+   ```
+
+4. Wait for AWS Amplify to complete the deployment.
+
+5. Verify that the application is working correctly by:
+   - Visiting the Amplify URL
+   - Testing the authentication flow
+   - Ensuring API communication is functioning properly
+
 
 ## CI/CD Information
 
