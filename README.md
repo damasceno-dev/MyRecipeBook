@@ -180,7 +180,6 @@ npm run generate-api:prod
 4. Wait for AWS Amplify to complete the deployment.
 
 ### 7. That's it! Your application should be up and running
-
 Verify that the application is working correctly by:
    - Visiting the Amplify URL
    - Testing the authentication flow
