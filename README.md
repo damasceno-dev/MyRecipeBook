@@ -1,6 +1,6 @@
 # MyRecipeBook Full-Stack Application Deployment Guide
 
-This guide provides step-by-step instructions for deploying the complete full-stack application, including infrastructure, server, and web.
+This guide provides step-by-step instructions for deploying the complete full-stack application, including infrastructure, server, and web components.
 
 ## Project Structure
 
@@ -108,31 +108,81 @@ After running the deployment workflow and deploying the backed, go back to the i
 
 1. Navigate to the web directory
 
-2. Update the `.env.production` file with the AppRunner URL:
-```
+2. Update the `.env.production` file with the AppRunner URL from step 3:
+```env
+# Backend API URL (from AppRunner deployment)
 NEXT_PUBLIC_API_URL=https://your-apprunner-service-url
+
+# Frontend Application URL (your Amplify URL)
+NEXT_PUBLIC_AUTH_URL=https://your-amplify-web-url  # You are updatig this after Amplify deployment
+
+# Google OAuth Configuration (obtained from backend project)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# NextAuth Configuration
+NEXTAUTH_URL=https://your-amplify-web-url  # Must match NEXT_PUBLIC_AUTH_URL
+NEXTAUTH_SECRET=your_nextauth_secret  # Required for secure authentication
 ```
 
-3. Generate the api function from orval for the production environment, and push it to the repository
+3. Generate a secure NEXTAUTH_SECRET using one of these methods:
+```bash
+# Method 1: Using openssl
+openssl rand -base64 32
 
+# Method 2: Using node
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
-npm run generate-api:prod
+
+4. Generate the API types and functions for production:
+```bash
+npm run generate:prod
 ```
 
-#### 4.2 Deploy Web to AWS Amplify
+5. Push the repository to github with the new routes from the app runner url.
 
-1. Log in to the AWS Management Console.
-2. Navigate to AWS Amplify.
-3. Click "New app" → "Host web app".
-4. Connect to your GitHub repository.
-5. Configure the build settings as required.
-6. Deploy the application.
-7. Note down the Amplify application URL once deployment is complete.
+#### 4.2 Deploy in AWS Amplify
+
+1. **Initial Deployment**
+   - Log in to the AWS Management Console
+   - Navigate to AWS Amplify
+   - Click "Deploy an app"
+   - Choose your source code provider (GitHub) and select your branch
+   - Configure build settings:
+     ```
+     App name: myRecipeBook
+     Framework: Next.js (auto-detected)
+     Build command: npm run build
+     Build output directory: .next
+     ```
+
+2. **Environment Variables Setup**
+   - Before the deployment, at the step App Settings, in Advanced Settings
+   - Add the following environment variables with your initial values:
+     ```
+     NEXT_PUBLIC_API_URL=https://your-apprunner-service-url
+     GOOGLE_CLIENT_ID=your_google_client_id
+     GOOGLE_CLIENT_SECRET=your_google_client_secret
+     NEXTAUTH_SECRET=your_nextauth_secret
+     ```
+
+3. **Update URLs After Deployment**
+   - Once the deployment is complete, note down your Amplify application URL
+   - Add the following environment variables in AWS Amplify:
+     ```
+     NEXT_PUBLIC_AUTH_URL=https://your-amplify-web-url
+     NEXTAUTH_URL=https://your-amplify-web-url
+     ```
+   - Click "Save" to trigger a new deployment with the updated URLs
+   - Update your local `.env.production` with the same URLs for reference
+
+> **Note**: The `.env.production` file is only used for local development reference and to generate the api routes with orval. 
+> All production environment variables are managed through AWS Amplify's environment variables settings.
 
 ### 5. Finalize Server Configuration
 
 1. Update the `appsettings.Production.json`. In the ExternalLogin:AllowedReturnUrls sections with the Web URL:
-```
+```json
 {
      "ExternalLogin": {
       "AllowedReturnUrls": [
@@ -142,48 +192,18 @@ npm run generate-api:prod
         "/logout",
         "test.org",
         "http://localhost:3000/redirect-after-login",
-        "https://your-amplify-web-url" <---- ####  ADD THIS LINE  ####
+        "https://your-amplify-web-url"  # Add this line
       ]
 }
 ```
 
 2. Trigger a new server deployment to apply the changes.
 
-### 6. Finalize Web Configuration
-
-1. Update the `.env.production` file with all required values:
-   ```env
-   # Backend API URL (from AppRunner deployment)
-   NEXT_PUBLIC_API_URL=https://your-apprunner-service-url
-
-   # Google OAuth Configuration
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-   # NextAuth Configuration
-   NEXTAUTH_URL=https://your-amplify-web-url <---- #### ADD THIS LINE ####
-   NEXTAUTH_SECRET=your_nextauth_secret
-   ```
-
-2. Generate the API types and functions for production:
-   ```bash
-   npm run generate:prod
-   ```
-
-3. Commit and push these changes to trigger a new deployment:
-   ```bash
-   git add .env.production src/api
-   git commit -m "Update production configuration with final URLs"
-   git push
-   ```
-
-4. Wait for AWS Amplify to complete the deployment.
-
-### 7. That's it! Your application should be up and running
+### 6. That's it! Your application should be up and running
 Verify that the application is working correctly by:
-   - Visiting the Amplify URL
-   - Testing the authentication flow
-   - Ensuring API communication is functioning properly
+- Visiting the Amplify URL
+- Testing the authentication flow
+- Ensuring API communication is functioning properly
 
 
 ## CI/CD Information
