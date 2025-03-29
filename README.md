@@ -134,12 +134,7 @@ openssl rand -base64 32
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-4. Generate the API types and functions for production:
-```bash
-npm run generate:prod
-```
-
-5. Push the repository to github with the new routes from the app runner url.
+4. Push the repository to GitHub.
 
 #### 4.2 Deploy in AWS Amplify
 
