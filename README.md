@@ -35,8 +35,8 @@ cp .secrets.example .secrets
 4. Edit the `.secrets` file with your AWS credentials and configuration:
 
 * AWS ADMIN is the aws profile that is going to give the AWS RESOURCE CREATOR profile permission to create all resources needed by this app
-* AWS RESOURCES CREATOR is the aws profile that is going to create this resources
-
+* AWS RESOURCES CREATOR is the aws profile that is going to create the resources
+> This segregation minimizes the permissions needed and improves security making the configuration needed by the root profile be minimal 
 
 5. Export the secrets to base64 and create and add them to a variable in github secrets called ENCODED_SECRETS:
 
@@ -45,7 +45,7 @@ base64 -i .secrets
 ```
 
 #### 1.2 Deploy Admin and Resources Infrastructure (Step 1 and 2)
-On commit or using some tool to run the workflow locally (i. e: act), the '1-deploy.yml' will run the steps defined in the folder 1-admin and 2-resources
+On commit or using some tool to run the workflow locally (i. e: act), the '1-deploy.yml' will run the steps defined in the folder 1-admin and 2-resources.
 If you using act on mac, this is the command to run the workflow locally. Run it in the root of the infra folder:
 
 act -s ENCODED_SECRETS="$(base64 -i .secrets | tr -d '\n')" --container-architecture linux/amd64
@@ -181,13 +181,13 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 {
      "ExternalLogin": {
       "AllowedReturnUrls": [
-        "/",
-        "/home",
-        "/dashboard",
-        "/logout",
-        "test.org",
-        "http://localhost:3000/redirect-after-login",
-        "https://your-amplify-web-url"  # Add this line
+         "/",
+         "/home",
+         "/dashboard",
+         "/logout",
+         "test.org",
+         "http://localhost:3000/redirect-after-login", 
+         "https://your-amplify-web-url/redirect-after-login" # Add this line
       ]
 }
 ```
@@ -219,7 +219,7 @@ The application has continuous integration and deployment set up:
 ## Destroy workflow:
 1. In the infra submodule, execute workflows/destroy.yml manually to destroy all infra and server resources.
 2. In AWS Amplify, App settings, click on Delete app
-3. Manually delete the s3 bucket and the initial policy created in step 1.1.2
+3. Manually delete the s3 bucket **_and_** the initial policy created in step 1.1.2
 
 
 ## Development Workflow
